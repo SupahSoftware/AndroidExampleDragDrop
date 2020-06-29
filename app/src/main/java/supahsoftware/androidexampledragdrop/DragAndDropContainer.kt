@@ -17,18 +17,26 @@ class DragAndDropContainer(
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
+        validateChildCount()
+        firstChild()?.setOnLongClickListener { startDrag(it) }
         setOnDragListener(dragAndDropListener)
-        if (childCount > 1) {
-            throw IllegalStateException("There should be exactly 1 child inside of a DragAndDropContainer, but there was $childCount")
-        } else if (childCount == 1) {
-            getChildAt(0).setOnLongClickListener { startDrag(it) }
-        }
     }
 
     fun setContent(view: View) {
         removeAllViews()
         addView(view)
     }
+
+    fun removeContent(view: View) {
+        view.setOnLongClickListener(null)
+        removeView(view)
+    }
+
+    private fun validateChildCount() = check(childCount <= 1) {
+        "There should be a maximum of 1 child inside of a DragAndDropContainer, but there were $childCount"
+    }
+
+    private fun firstChild() = if (childCount >= 1) getChildAt(0) else null
 
     private fun startDrag(view: View): Boolean {
         val tag = view.tag as? CharSequence
