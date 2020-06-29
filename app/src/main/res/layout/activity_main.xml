@@ -13,7 +13,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="#dedede"
+        android:background="@drawable/outline_gray_solid"
         app:layout_constraintTop_toTopOf="parent">
 
         <FrameLayout
@@ -38,7 +38,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="#dedede"
+        android:background="@drawable/outline_gray_solid"
         app:layout_constraintTop_toBottomOf="@id/container_1" />
 
     <supahsoftware.androidexampledragdrop.DragAndDropContainer
@@ -48,7 +48,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="#dedede"
+        android:background="@drawable/outline_gray_solid"
         app:layout_constraintTop_toBottomOf="@id/container_2" />
 
     <supahsoftware.androidexampledragdrop.DragAndDropContainer
@@ -58,7 +58,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="#dedede"
+        android:background="@drawable/outline_gray_solid"
         app:layout_constraintTop_toBottomOf="@id/container_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,45 +10,58 @@ import android.widget.FrameLayout
 
 class DragAndDropContainer(
     context: Context,
-    attrs: AttributeSet
+    attrs: AttributeSet?
 ) : FrameLayout(context, attrs) {
 
     private val dragAndDropListener by lazy { DragAndDropListener() }
+    private var content: View? = null
+
+    init {
+        setOnDragListener(dragAndDropListener)
+    }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        validateChildCount()
-        firstChild()?.setOnLongClickListener { startDrag(it) }
-        setOnDragListener(dragAndDropListener)
+        updateChild()
     }
 
     fun setContent(view: View) {
         removeAllViews()
         addView(view)
+        updateChild()
     }
 
     fun removeContent(view: View) {
         view.setOnLongClickListener(null)
         removeView(view)
+        updateChild()
     }
+
+    private fun updateChild() {
+        validateChildCount()
+        content = getFirstChild()
+        content?.setOnLongClickListener { startDrag() }
+    }
+
+    private fun getFirstChild() = if (childCount == 1) getChildAt(0) else null
 
     private fun validateChildCount() = check(childCount <= 1) {
         "There should be a maximum of 1 child inside of a DragAndDropContainer, but there were $childCount"
     }
 
-    private fun firstChild() = if (childCount >= 1) getChildAt(0) else null
+    private fun startDrag(): Boolean {
+        content?.let {
+            val tag = it.tag as? CharSequence
+            val item = ClipData.Item(tag)
+            val data = ClipData(tag, arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
+            val shadow = DragShadowBuilder(it)
 
-    private fun startDrag(view: View): Boolean {
-        val tag = view.tag as? CharSequence
-        val item = ClipData.Item(tag)
-        val data = ClipData(tag, arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
-        val shadow = DragShadowBuilder(view)
-
-        if (Build.VERSION.SDK_INT >= 24) {
-            view.startDragAndDrop(data, shadow, view, 0)
-        } else {
-            view.startDrag(data, shadow, view, 0)
-        }
-        return true
+            if (Build.VERSION.SDK_INT >= 24) {
+                it.startDragAndDrop(data, shadow, it, 0)
+            } else {
+                it.startDrag(data, shadow, it, 0)
+            }
+            return true
+        } ?: return false
     }
 }
